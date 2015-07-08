@@ -29,7 +29,7 @@
 (def lines (atom []))
 
 (defn alter-turtle
-  [turt f] 
+  [turt f]
   (swap! turt f)
   turt)
 
@@ -76,7 +76,7 @@
      (let [rads (deg->radians (get @turt :angle))
            dx (* len (Math/cos rads))
            dy (* len (Math/sin rads))
-           alter-fn #(translate % dx dy)] 
+           alter-fn #(translate % dx dy)]
        (alter-turtle turt alter-fn))))
 
 (defn back
@@ -148,7 +148,7 @@
        ~@ body)))
 
 (defmacro repeat
-  [n & body] 
+  [n & body]
   `(let [states# (repeatedly ~n ~@body)]
      (dorun
       states#)
@@ -166,7 +166,7 @@
      (setxy turtle x y))
   ([turt x y]
      (let [pen-down? (get @turt :pen)]
-       (letfn [(alter-fn [t] 
+       (letfn [(alter-fn [t]
                  (-> t
                      (assoc :x x)
                      (assoc :y y)))]
@@ -187,16 +187,17 @@
 (defn home
   ([]
      (home turtle))
-  ([turt] 
-     (setxy turt 0 0) 
+  ([turt]
+     (setxy turt 0 0)
      (setheading turt 90)))
 
 (defn reset-rendering
   []
   (.clear (q/current-graphics))
-  (q/background 200)                 ;; Set the background colour to
+  (q/background 240)                 ;; Set the background colour to
                                      ;; a nice shade of grey.
-    (q/stroke-weight 1))
+  (q/stroke-weight 1)
+  (q/stroke 222 79 79))
 
 (defn setup []
   (q/smooth)                          ;; Turn on anti-aliasing
@@ -206,19 +207,20 @@
 (defn draw []
   (q/with-translation [(/ (q/width) 2) (/ (q/height) 2)]
     (reset-rendering)
-    
+
     (q/push-matrix)
     (q/apply-matrix 1  0 0
                     0 -1 0)
     (doseq [l @lines]
       (let [[[x1 y1] [x2 y2]] l]
-        (q/line x1 y1 x2 y2))) 
-    (draw-turtle) 
+        (q/line x1 y1 x2 y2)))
+    (draw-turtle)
     (q/pop-matrix)))
 
 (q/defsketch example                  ;; Define a new sketch named example
   :title "Watch the turtle go!"       ;; Set the title of the sketch
   :setup setup                        ;; Specify the setup fn
   :draw draw                          ;; Specify the draw fn
-  :size [323 200])                    ;; You struggle to beat the golden ratio 
+  :features [:keep-on-top]            ;; Keep the window on top
+  :size [485 300])                    ;; You struggle to beat the golden ratio
 
