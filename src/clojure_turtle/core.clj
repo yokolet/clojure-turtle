@@ -204,6 +204,13 @@
   ;; (q/frame-rate 1)                    ;; Set framerate to 1 FPS
   (reset-rendering))
 
+(defn cursor-color [x y]
+  "Calculate a color based on x and y values"
+  (let [x-col (* 255 (/ (+ x (/ (q/width) 2)) (q/width)))
+        y-col (* 255 (/ (+ y (/ (q/height) 2)) (q/height)))
+        z-col (mod (+ x y) 255)]
+    [x-col y-col z-col]))
+
 (defn draw []
   (q/with-translation [(/ (q/width) 2) (/ (q/height) 2)]
     (reset-rendering)
@@ -213,6 +220,7 @@
                     0 -1 0)
     (doseq [l @lines]
       (let [[[x1 y1] [x2 y2]] l]
+        (apply q/stroke (cursor-color x2 y2))
         (q/line x1 y1 x2 y2)))
     (draw-turtle)
     (q/pop-matrix)))
